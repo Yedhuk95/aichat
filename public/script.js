@@ -14,7 +14,7 @@ async function uploadFile() {
   formData.append("file", file);
 
   try {
-    const response = await fetch(`api/upload`, {
+    const response = await fetch(`/api/upload`, {
       method: "POST",
       body: formData,
     });
@@ -66,7 +66,7 @@ async function askAI() {
   }
 
   try {
-    const response = await fetch(`api/ask`, {
+    const response = await fetch(`/api/ask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content, question }),
