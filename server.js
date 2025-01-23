@@ -52,7 +52,7 @@ async function parsePdf(dataBuffer) {
 }
 
 // Route to upload and process files
-app.post("/upload", upload.single("file"), async (req, res) => {
+app.post("/api/upload", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
     if (!file) {
@@ -94,7 +94,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
 });
 
 // Google Gemini API Integration
-app.post("/ask", async (req, res) => {
+app.post("/api/ask", async (req, res) => {
   const { content, question } = req.body;
   const API_KEY = process.env.GEMINI_API_KEY;
   if (!content || !question) {
