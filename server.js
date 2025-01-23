@@ -11,7 +11,10 @@ const { google } = require("googleapis"); // Google API SDK
 
 const app = express();
 app.use(express.json());
-app.use(cors()); // Enable CORS for all origins
+app.use(cors({
+  origin: ['https://aichat-gemini.vercel.app', 'http://localhost:5001'],
+  methods: ['GET', 'POST']
+})); // Enable CORS for all origins
 
 // Serve static files (frontend)
 const frontendPath = path.join(__dirname, "/public");
