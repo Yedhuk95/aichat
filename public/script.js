@@ -1,4 +1,4 @@
-//const API_URL = "http://localhost:5001"; // Backend server URL
+const API_URL = "https://aichat-gemini.vercel.app/"; // Backend server URL
 
 // Function to handle file upload
 async function uploadFile() {
@@ -14,7 +14,7 @@ async function uploadFile() {
   formData.append("file", file);
 
   try {
-    const response = await fetch(`/api/upload`, {
+    const response = await fetch(`${API_URL}/upload`, {
       method: "POST",
       body: formData,
     });
@@ -66,7 +66,7 @@ async function askAI() {
   }
 
   try {
-    const response = await fetch(`/api/ask`, {
+    const response = await fetch(`${API_URL}/ask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content, question }),
