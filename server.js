@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cors()); // Enable CORS for all origins
 
 // Serve static files (frontend)
-const frontendPath = path.join(__dirname, "../public");
+const frontendPath = path.join(__dirname, "/public");
 app.use(express.static(frontendPath));
 
 // Configure Multer for file uploads
