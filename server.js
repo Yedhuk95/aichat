@@ -18,16 +18,20 @@ const frontendPath = path.join(__dirname, "/public");
 app.use(express.static(frontendPath));
 
 // Configure Multer for file uploads
-const upload = multer({ dest: path.join(__dirname, "uploads/") }); // Ensure the "uploads" directory exists
-
+const storage = multer.memoryStorage();
+//const upload = multer({ dest: path.join(__dirname, "uploads/") }); // Ensure the "uploads" directory exists
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
 // Ensure the uploads directory exists
-if (!fs.existsSync(path.join(__dirname, "uploads"))) {
-  fs.mkdirSync(path.join(__dirname, "uploads"));
-}
+// if (!fs.existsSync(path.join(__dirname, "uploads"))) {
+//   fs.mkdirSync(path.join(__dirname, "uploads"));
+// }
 
 // Function to parse Excel files
-function parseExcel(filePath) {
-  const workbook = xlsx.readFile(filePath);
+function parseExcel(buffer) {
+  const workbook = xlsx.read(buffer,{type:'buffer'});
   const sheetNames = workbook.SheetNames;
   let content = "";
   sheetNames.forEach((sheetName) => {
@@ -38,8 +42,8 @@ function parseExcel(filePath) {
 }
 
 // Function to parse PDF files
-async function parsePdf(filePath) {
-  const dataBuffer = fs.readFileSync(filePath);
+async function parsePdf(dataBuffer) {
+  //const dataBuffer = fs.readFileSync(filePath);
   const data = await pdf(dataBuffer);
   return data.text;
 }
@@ -61,22 +65,22 @@ app.post("/upload", upload.single("file"), async (req, res) => {
 
     if (!supportedMimeTypes.includes(file.mimetype)) {
       // Cleanup uploaded file if it's not supported
-      fs.unlinkSync(file.path);
+      //fs.unlinkSync(file.path);
       return res.status(400).json({ error: "Unsupported file type" });
     }
 
     let content = "";
     if (file.mimetype === "application/pdf") {
-      content = await parsePdf(file.path);
+      content = await parsePdf(file.buffer);
     } else if (
       file.mimetype === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
       file.mimetype === "application/vnd.ms-excel"
     ) {
-      content = parseExcel(file.path);
+      content = parseExcel(file.buffer);
     }
 
     // Cleanup uploaded file
-    fs.unlinkSync(file.path);
+    //fs.unlinkSync(file.path);
 
     // Respond with parsed content
     res.json({ content });
